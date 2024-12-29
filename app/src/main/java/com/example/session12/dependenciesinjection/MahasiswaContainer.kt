@@ -23,5 +23,6 @@ class MahasiswaContainer : AppContainer {
     }
 
     override val kontakRepository: MahasiswaRepository by lazy {
-        NetworkKontakRepository(mahasiswaService) }
+        MahasiswaRepository.NetworkMahasiswaRepository(mahasiswaService)
+    }
 }

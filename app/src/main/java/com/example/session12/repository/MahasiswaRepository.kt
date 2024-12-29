@@ -4,7 +4,7 @@ import com.example.session12.model.Mahasiswa
 import com.example.session12.service.MahasiswaService
 import okio.IOException
 
-interface MahasiswaRepository{
+interface MahasiswaRepository {
     suspend fun getMahasiswa(): List<Mahasiswa>
 
     suspend fun insertMahasiswa(mahasiswa: Mahasiswa)
@@ -14,40 +14,39 @@ interface MahasiswaRepository{
     suspend fun deleteMahasiswa(nim: String)
 
     suspend fun getMahasiswabyNim(nim: String): Mahasiswa
-}
 
-class NetworkMahasiswaRepository(
-    private val mahasiswaApiService: MahasiswaService
-): MahasiswaRepository{
-    override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
-        mahasiswaApiService.inserMahasiswa(mahasiswa)
-    }
+    class NetworkMahasiswaRepository(
+        private val mahasiswaApiService: MahasiswaService    ) : MahasiswaRepository {
+        override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
+            mahasiswaApiService.insertMahasiswa(mahasiswa)
+        }
 
-    override suspend fun updateMahasiswa(nim: String, mahasiswa: Mahasiswa) {
-        mahasiswaApiService.updateMahasiswa(nim, mahasiswa)
-    }
+        override suspend fun updateMahasiswa(nim: String, mahasiswa: Mahasiswa) {
+            mahasiswaApiService.updateMahasiswa(nim, mahasiswa)
+        }
 
-    override suspend fun deleteMahasiswa(nim: String) {
-        try {
-            val response = mahasiswaApiService.deleteMahasiswa(nim)
-            if (!response.isSuccesfull){
-                throw IOException("false to delete mahasiswa. HTP Status Code : " +
-                "${response.code()}")
-            }else{
-                response.message()
-                println(response.message())
+        override suspend fun deleteMahasiswa(nim: String) {
+            try {
+                val response = mahasiswaApiService.deleteMahasiswa(nim)
+                if (!response.isSuccessful) {
+                    throw IOException(
+                        "false to delete mahasiswa. " +
+                                "HTTP Status Code :" + "${response.code()}"
+                    )
+                } else {
+                    response.message()
+                    println(response.message())
+                }
+            } catch (e: Exception) {
+                throw e
             }
-        }catch (e:Exception){
-            throw e
+        }
+
+        override suspend fun getMahasiswa(): List<Mahasiswa> =
+            mahasiswaApiService.getAllMahasiswa()
+
+        override suspend fun getMahasiswabyNim(nim: String): Mahasiswa {
+            return mahasiswaApiService.getMahasiswabyNim(nim)
         }
     }
-
-    override suspend fun getMahasiswa(): List<Mahasiswa> =
-        mahasiswaApiService.getAllMahasiswa()
-
-    override suspend fun getMahasiswabyNim(nim: String): Mahasiswa {
-        mahasiswaApiService.getMahasiswabyNim(nim)
-    }
-
-
 }
