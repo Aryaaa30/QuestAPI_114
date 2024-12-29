@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -80,7 +81,7 @@ fun HomeScreen(
         },
     ){ innerPadding ->
         HomeStatus(
-            homeUiState = viewModel.mhsUIState,
+            homeUIState = viewModel.mhsUiState,
             retryAction = { viewModel.getMhs() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
@@ -119,7 +120,7 @@ fun HomeStatus(
                 )
             }
         }
-        is HomeUIState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
     }
 }
 

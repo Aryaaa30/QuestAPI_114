@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Session12Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MahasiswaApp()
+                    MahasiswaApp(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
