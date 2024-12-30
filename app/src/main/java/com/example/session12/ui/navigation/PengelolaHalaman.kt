@@ -8,8 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.session12.ui.view.DestinasiEntry
 import com.example.session12.ui.view.DestinasiHome
+import com.example.session12.ui.view.DetailView
 import com.example.session12.ui.view.EntryMhsScreen
-import com.example.session12.ui.view.HomeScreen
+import com.example.session12.ui.view.HomeView
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()) {
@@ -19,9 +20,10 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         modifier = Modifier,
     ) {
         composable(DestinasiHome.route) {
-            HomeScreen(
+            HomeView(
                 navigateToItemEntry = { navController.navigate(DestinasiEntry.route) },
-                onDetailClick = {
+                onDetailClick = { nim ->
+                    navController.navigate("detail/$nim")
                 }
             )
         }
@@ -33,6 +35,13 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     }
                 }
             })
+        }
+        composable("detail/{nim}") { backStackEntry ->
+            val nim = backStackEntry.arguments?.getString("nim") ?: ""
+            DetailView(
+                nim = nim,
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

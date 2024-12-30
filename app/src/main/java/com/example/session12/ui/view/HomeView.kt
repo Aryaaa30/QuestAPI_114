@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.session12.R
 import com.example.session12.model.Mahasiswa
 import com.example.session12.ui.PenyediaViewModel
@@ -51,16 +52,18 @@ object DestinasiHome : DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeView(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
-){
+) {
+    val navController = rememberNavController() // Ini untuk navigasi
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar ={
+        topBar = {
             CostumeTopAppBar(
                 title = DestinasiHome.titleRes,
                 canNavigateBack = false,
@@ -79,12 +82,14 @@ fun HomeScreen(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Kontak")
             }
         },
-    ){ innerPadding ->
+    ) { innerPadding ->
         HomeStatus(
             homeUIState = viewModel.mhsUiState,
             retryAction = { viewModel.getMhs() },
             modifier = Modifier.padding(innerPadding),
-            onDetailClick = onDetailClick,
+            onDetailClick = { nim ->
+                navController.navigate("detail/$nim") // Navigasi ke halaman detail
+            },
             onDeleteClick = {
                 viewModel.deleteMhs(it.nim)
                 viewModel.getMhs()
@@ -100,19 +105,25 @@ fun HomeStatus(
     modifier: Modifier = Modifier,
     onDeleteClick: (Mahasiswa) -> Unit = {},
     onDetailClick: (String) -> Unit
-){
-    when (homeUIState){
+) {
+    when (homeUIState) {
         is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
-        is HomeUiState.Success ->{
-            if (homeUIState.mahasiswa.isEmpty()){
-                return Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        is HomeUiState.Success -> {
+            if (homeUIState.mahasiswa.isEmpty()) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(text = "Tidak ada data Kontak")
                 }
-            }else{
+            } else {
                 MhsLayout(
-                    mahasiswa = homeUIState.mahasiswa, modifier = modifier.fillMaxWidth(),
-                    onDetailClick = {
-                        onDetailClick(it.nim)
+                    mahasiswa = homeUIState.mahasiswa,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { mahasiswa ->
+                        if (mahasiswa.nim.isNotEmpty()) {
+                            onDetailClick(mahasiswa.nim)
+                        }
                     },
                     onDeleteClick = {
                         onDeleteClick(it)
@@ -171,9 +182,8 @@ fun MhsLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(kontak) },
-                onDeleteClick = {
-                    onDeleteClick(kontak)
-                }
+                onDeleteClick = { onDeleteClick(kontak) },
+                onDetailClick = { onDetailClick(it) }
             )
         }
     }
@@ -183,46 +193,54 @@ fun MhsLayout(
 fun MhsCard(
     mahasiswa: Mahasiswa,
     modifier: Modifier = Modifier,
-    onDeleteClick: (Mahasiswa) -> Unit = {}
-){
+    onDeleteClick: (Mahasiswa) -> Unit = {},
+    onDetailClick: (Mahasiswa) -> Unit = {}
+) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                if (mahasiswa.nim.isNotEmpty()) {
+                    onDetailClick(mahasiswa)
+                }
+            },
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ){
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ){
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ){
+    ) {
+        Box {
+            // Icon delete positioned in the top-right corner
+            IconButton(
+                onClick = { onDeleteClick(mahasiswa) },
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Kontak"
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Nama
                 Text(
                     text = mahasiswa.nama,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = { onDeleteClick(mahasiswa) }) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                    )
-                }
 
+                // NIM and Kelas
                 Text(
-                    text = mahasiswa.nim,
-                    style = MaterialTheme.typography.titleMedium
+                    text = "NIM: ${mahasiswa.nim}",
+                    style = MaterialTheme.typography.bodySmall,
                 )
 
+                // Alamat
                 Text(
-                    text = mahasiswa.kelas,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Text(
-                    text = mahasiswa.alamat,
-                    style = MaterialTheme.typography.titleMedium
+                    text = "Alamat: ${mahasiswa.alamat}",
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
