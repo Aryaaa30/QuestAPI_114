@@ -10,26 +10,15 @@ import com.example.session12.application.MahasiswaApplications
 import com.example.session12.ui.viewmodel.DetailViewModel
 import com.example.session12.ui.viewmodel.HomeViewModel
 import com.example.session12.ui.viewmodel.InsertViewModel
+import com.example.session12.ui.viewmodel.UpdateViewModel
 
-object PenyediaViewModel {
+object PenyediaViewModel{
     val Factory = viewModelFactory {
-        initializer {
-            HomeViewModel(
-                mahasiswaApp().container.kontakRepository
-            )
-        }
-        initializer {
-            InsertViewModel(
-                mahasiswaApp().container.kontakRepository
-            )
-        }
-        initializer {
-            DetailViewModel(
-                mahasiswaApp().container.kontakRepository
-            )
-        }
+        initializer { HomeViewModel(aplikasiMahasiswa().container.mahasiswaRepository) }
+        initializer { InsertViewModel(aplikasiMahasiswa().container.mahasiswaRepository) }
+        initializer { DetailViewModel(createSavedStateHandle(),aplikasiMahasiswa().container.mahasiswaRepository) }
+        initializer { UpdateViewModel(createSavedStateHandle(),aplikasiMahasiswa().container.mahasiswaRepository) }
     }
+    fun CreationExtras.aplikasiMahasiswa(): MahasiswaApplications =
+        (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]as MahasiswaApplications)
 }
-
-fun CreationExtras.mahasiswaApp(): MahasiswaApplications =
-    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MahasiswaApplications)

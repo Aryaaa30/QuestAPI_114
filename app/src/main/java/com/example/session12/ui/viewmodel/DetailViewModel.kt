@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.session12.model.Mahasiswa
 import com.example.session12.repository.MahasiswaRepository
+import com.example.session12.ui.view.DestinasiDetail
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException

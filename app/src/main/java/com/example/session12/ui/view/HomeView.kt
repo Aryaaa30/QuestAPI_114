@@ -129,7 +129,7 @@ fun HomeStatus(
 fun OnLoading(modifier: Modifier = Modifier){
     Image(
         modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.umy),
+        painter = painterResource(R.drawable.img),
         contentDescription = stringResource(R.string.loading)
     )
 }
@@ -143,7 +143,7 @@ fun OnError(retryAction: ()->Unit, modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Image(
-            painter = painterResource(id = R.drawable.umy), contentDescription = ""
+            painter = painterResource(id = R.drawable.img), contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed),modifier = Modifier.padding(16.dp))
         Button(onClick = retryAction) {
