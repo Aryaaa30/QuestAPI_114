@@ -20,9 +20,10 @@ fun CostumeTopAppBar(
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateUp: () -> Unit = {},
-    onRefresh: () -> Unit = {},
-) {
+    navigateUp: ()->Unit={},
+    onRefresh: ()->Unit={},
+
+    ){
     CenterAlignedTopAppBar(
         title = { Text(title) },
         actions = {
@@ -32,7 +33,7 @@ fun CostumeTopAppBar(
         },
         modifier = modifier,
         scrollBehavior = scrollBehavior, navigationIcon = {
-            if (canNavigateBack) {
+            if(canNavigateBack){
                 IconButton(onClick = navigateUp) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
                 }

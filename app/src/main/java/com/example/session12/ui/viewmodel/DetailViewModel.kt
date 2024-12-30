@@ -1,6 +1,9 @@
 package com.example.session12.ui.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.session12.model.Mahasiswa
@@ -15,24 +18,42 @@ sealed class DetailUiState {
     object Loading : DetailUiState()
 }
 
-class DetailViewModel(private val mhs: MahasiswaRepository) : ViewModel() {
-    var detailUiState = mutableStateOf<DetailUiState>(DetailUiState.Loading)
+class DetailViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val mhs: MahasiswaRepository
+) : ViewModel() {
+
+    var mahasiswaDetailState: DetailUiState by mutableStateOf(DetailUiState.Loading)
         private set
 
-    fun getDetailMahasiswa(nim: String) {
+    private val _nim: String = checkNotNull(savedStateHandle[DestinasiDetail.NIM])
+
+    init {
+        getMahasiswaByNim()
+    }
+
+    fun getMahasiswaByNim() {
         viewModelScope.launch {
-            detailUiState.value = DetailUiState.Loading
-            detailUiState.value = try {
-                val mahasiswa = mhs.getMahasiswabyNim(nim)
-                if (mahasiswa != null) {
-                    DetailUiState.Success(mahasiswa)
-                } else {
-                    DetailUiState.Error
-                }
+            mahasiswaDetailState = DetailUiState.Loading
+            mahasiswaDetailState = try {
+                val mahasiswa = mhs.getMahasiswaByNim(_nim)
+                DetailUiState.Success(mahasiswa)
             } catch (e: IOException) {
                 DetailUiState.Error
             } catch (e: HttpException) {
                 DetailUiState.Error
+            }
+        }
+    }
+
+    fun deleteMhs(nim:String) {
+        viewModelScope.launch {
+            try {
+                mhs.deleteMahasiswa(nim)
+            }catch (e:IOException){
+                HomeUiState.Error
+            }catch (e:HttpException){
+                HomeUiState.Error
             }
         }
     }
