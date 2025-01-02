@@ -27,7 +27,7 @@ object DestinasiUpdate: DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateScreen(
+fun UpdateView(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNavigate:()-> Unit,

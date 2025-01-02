@@ -12,10 +12,10 @@ import com.example.session12.ui.view.DestinasiDetail
 import com.example.session12.ui.view.DestinasiEntry
 import com.example.session12.ui.view.DestinasiHome
 import com.example.session12.ui.view.DestinasiUpdate
-import com.example.session12.ui.view.DetailScreen
+import com.example.session12.ui.view.DetailView
 import com.example.session12.ui.view.EntryMhsScreen
-import com.example.session12.ui.view.HomeScreen
-import com.example.session12.ui.view.UpdateScreen
+import com.example.session12.ui.view.HomeView
+import com.example.session12.ui.view.UpdateView
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
@@ -25,7 +25,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         modifier = Modifier,
     ){
         composable(DestinasiHome.route){
-            HomeScreen(
+            HomeView(
                 navigateToItemEntry = {navController.navigate(DestinasiEntry.route)},
                 onDetailClick = { nim ->
                     navController.navigate("${DestinasiDetail.route}/$nim")
@@ -46,7 +46,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         ){
             val nim = it.arguments?.getString(DestinasiDetail.NIM)
             nim?.let { nim ->
-                DetailScreen(
+                DetailView(
                     navigateToItemUpdate = { navController.navigate("${DestinasiUpdate.route}/$nim") },
                     navigateBack = { navController.navigate(DestinasiHome.route) {
                         popUpTo(DestinasiHome.route) { inclusive = true }
@@ -60,7 +60,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         ){
             val nim = it.arguments?.getString(DestinasiUpdate.NIM)
             nim?.let { nim ->
-                UpdateScreen(
+                UpdateView(
                     onBack = { navController.popBackStack() },
                     onNavigate = { navController.popBackStack() }
                 )

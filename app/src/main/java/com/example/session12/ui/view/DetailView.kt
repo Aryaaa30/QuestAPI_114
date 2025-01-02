@@ -31,7 +31,7 @@ object DestinasiDetail: DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
+fun DetailView(
     navigateBack: () -> Unit,
     navigateToItemUpdate: () -> Unit,
     modifier: Modifier = Modifier,
